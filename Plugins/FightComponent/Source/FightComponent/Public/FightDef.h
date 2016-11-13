@@ -5,9 +5,72 @@
 #include "FightDef.generated.h"
 
 
+DECLARE_LOG_CATEGORY_EXTERN(FightLog, Log, All);
+
 UENUM(BlueprintType)
-enum class EState : uint8
+enum class EBuffType
 {
-	Alive,
-	Dead,
+	Add 	UMETA(DisplayName = "Add"),
+	Per 	UMETA(DisplayName = "Per"),
+};
+
+USTRUCT()
+struct FAttributeVector
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
+	TArray<float> Value;
+
+	float Get(uint8 type)
+	{
+		return Value[type];
+	}
+	float Set(uint8 type, float value)
+	{
+		Value[type] = value;
+	}
+	float Add(uint8 type, float value)
+	{
+		Value[type] += value;
+	}
+};
+
+
+USTRUCT(BlueprintType)
+struct FAttributeBuff
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
+	uint8 Type;
+
+	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
+	float Value;
+};
+
+USTRUCT()
+struct FAttributeBuffContainer
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
+	uint8 Type;
+
+	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
+	float Limit;
+
+	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
+	TEnumAsByte<EBuffType> BuffType;
+
+	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
+	TArray<FAttributeBuff> BuffList;
+
+	void CountBuff(FAttributeVector& vector)
+	{
+		for (FAttributeBuff buff : BuffList)
+		{
+			vector.Add(buff.Type, buff.Value);
+		}
+	}
 };

@@ -51,7 +51,7 @@ FName STRATEGYKIT_OnSelectionLost = FName(TEXT("OnSelectionLost"));
 	void AStrategyPawn::StaticRegisterNativesAStrategyPawn()
 	{
 	}
-	IMPLEMENT_CLASS(AStrategyPawn, 2768832981);
+	IMPLEMENT_CLASS(AStrategyPawn, 2152099589);
 	void UTouchInput::StaticRegisterNativesUTouchInput()
 	{
 	}
@@ -606,17 +606,17 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				MetaData->SetValue(OuterClass, TEXT("IncludePath"), TEXT("StrategyPawn.h"));
 				MetaData->SetValue(OuterClass, TEXT("ModuleRelativePath"), TEXT("Public/StrategyPawn.h"));
 				MetaData->SetValue(NewProp_SpringArm, TEXT("AllowPrivateAccess"), TEXT("true"));
-				MetaData->SetValue(NewProp_SpringArm, TEXT("Category"), TEXT("Camera"));
+				MetaData->SetValue(NewProp_SpringArm, TEXT("Category"), TEXT("StrategyPawn"));
 				MetaData->SetValue(NewProp_SpringArm, TEXT("EditInline"), TEXT("true"));
 				MetaData->SetValue(NewProp_SpringArm, TEXT("ModuleRelativePath"), TEXT("Public/StrategyPawn.h"));
 				MetaData->SetValue(NewProp_SpringArm, TEXT("ToolTip"), TEXT("Spring arm that will offset the camera"));
 				MetaData->SetValue(NewProp_Camera, TEXT("AllowPrivateAccess"), TEXT("true"));
-				MetaData->SetValue(NewProp_Camera, TEXT("Category"), TEXT("Camera"));
+				MetaData->SetValue(NewProp_Camera, TEXT("Category"), TEXT("StrategyPawn"));
 				MetaData->SetValue(NewProp_Camera, TEXT("EditInline"), TEXT("true"));
 				MetaData->SetValue(NewProp_Camera, TEXT("ModuleRelativePath"), TEXT("Public/StrategyPawn.h"));
 				MetaData->SetValue(NewProp_Camera, TEXT("ToolTip"), TEXT("Camera component that will be our viewpoint"));
 				MetaData->SetValue(NewProp_HullMesh, TEXT("AllowPrivateAccess"), TEXT("true"));
-				MetaData->SetValue(NewProp_HullMesh, TEXT("Category"), TEXT("Mesh"));
+				MetaData->SetValue(NewProp_HullMesh, TEXT("Category"), TEXT("StrategyPawn"));
 				MetaData->SetValue(NewProp_HullMesh, TEXT("EditInline"), TEXT("true"));
 				MetaData->SetValue(NewProp_HullMesh, TEXT("ModuleRelativePath"), TEXT("Public/StrategyPawn.h"));
 #endif
@@ -930,7 +930,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 			ReturnPackage = CastChecked<UPackage>(StaticFindObjectFast(UPackage::StaticClass(), NULL, FName(TEXT("/Script/StrategyKit")), false, false));
 			ReturnPackage->SetPackageFlags(PKG_CompiledIn | 0x00000080);
 			FGuid Guid;
-			Guid.A = 0xCA0B4CE4;
+			Guid.A = 0xCA348552;
 			Guid.B = 0x36C8D4C5;
 			Guid.C = 0x00000000;
 			Guid.D = 0x00000000;

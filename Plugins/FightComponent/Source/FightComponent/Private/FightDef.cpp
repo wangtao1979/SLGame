@@ -4,5 +4,5 @@
 #include "FightDef.h"
 
 
-
+DEFINE_LOG_CATEGORY(FightLog);
 

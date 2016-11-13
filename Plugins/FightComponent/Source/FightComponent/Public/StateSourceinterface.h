@@ -18,7 +18,7 @@ class IStateSourceInterface
 public:
 
 	UFUNCTION(BlueprintImplementableEvent)
-	TArray<int> GetState();
+	TArray<uint8> GetState();
 
 
 	UFUNCTION(BlueprintImplementableEvent)

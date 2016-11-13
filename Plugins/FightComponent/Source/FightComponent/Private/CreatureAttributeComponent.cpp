@@ -13,7 +13,7 @@ UCreatureAttributeComponent::UCreatureAttributeComponent()
 	// off to improve performance if you don't need them.
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = false;
-
+	MaxAttributeEntry = 0;
 	// ...
 }
 
@@ -34,4 +34,25 @@ void UCreatureAttributeComponent::TickComponent(float DeltaTime, ELevelTick Tick
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+
+float UCreatureAttributeComponent::GetByIndex(uint8 type)
+{
+	return 0.0f;
+}
+
+float UCreatureAttributeComponent::GetByName(FString type)
+{
+	return 0.0f;
+}
+
+void UCreatureAttributeComponent::AddBuff(const TScriptInterface<IAttributeSourceInterface>& source)
+{
+
+}
+
+void UCreatureAttributeComponent::RemoveBuff(const TScriptInterface<IAttributeSourceInterface>& source)
+{
+
 }

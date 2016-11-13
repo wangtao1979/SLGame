@@ -37,7 +37,7 @@ void UCreatureStateComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UCreatureStateComponent::AddState(const TScriptInterface<IStateSourceInterface>& source)
 {
-	for (int index : source->GetState())
+	for (uint8 index : source->GetState())
 	{
 		if (index >= 0)
 		{
@@ -52,7 +52,7 @@ void UCreatureStateComponent::AddState(const TScriptInterface<IStateSourceInterf
 
 void UCreatureStateComponent::RemoveState(const TScriptInterface<IStateSourceInterface>& source)
 {
-	for (int index : source->GetState())
+	for (uint8 index : source->GetState())
 	{
 		if (index >= 0)
 		{
@@ -64,7 +64,7 @@ void UCreatureStateComponent::RemoveState(const TScriptInterface<IStateSourceInt
 	}
 }
 
-bool UCreatureStateComponent::IsStateActive(int state)
+bool UCreatureStateComponent::IsStateActive(uint8 state)
 {
 	if (Container.IsValidIndex(state))
 	{

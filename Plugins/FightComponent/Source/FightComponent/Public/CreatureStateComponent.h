@@ -10,7 +10,7 @@
 /**
  * ½ÇÉ«×´Ì¬
  */
-UCLASS()
+UCLASS(BlueprintType,Blueprintable)
 class UCreatureStateComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -34,7 +34,7 @@ public:
 	void RemoveState(const TScriptInterface<IStateSourceInterface>& source);
 
 	UFUNCTION(BlueprintCallable, Category = "Fight")
-	bool IsStateActive(int state);
+	bool IsStateActive(uint8 state);
 
 	UFUNCTION(BlueprintCallable, Category = "Fight")
 	void InitializeState();

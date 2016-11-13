@@ -5,9 +5,11 @@
 #include "GameFramework/Character.h"
 #include "CreatureStateComponent.h"
 #include "CreatureAttributeComponent.h"
+#include "UObjectGlobals.h"
+#include "UObjectThreadContext.h"
 #include "Creature.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable)
 class ACreature : public ACharacter
 {
 	GENERATED_BODY()
@@ -15,7 +17,12 @@ class ACreature : public ACharacter
 protected:
 
 	FVector original_scale;
+
+	float AnimationSpeed;
+
 public:
+
+
 	UPROPERTY(Category = Creatue, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCreatureStateComponent* State;
 
@@ -41,4 +48,5 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Creature", meta = (AllowPrivateAccess = "true"))
 	void ResetScale(float scale);
+
 };
