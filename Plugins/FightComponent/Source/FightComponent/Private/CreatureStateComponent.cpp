@@ -22,7 +22,6 @@ UCreatureStateComponent::UCreatureStateComponent()
 void UCreatureStateComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 
@@ -31,7 +30,6 @@ void UCreatureStateComponent::TickComponent(float DeltaTime, ELevelTick TickType
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
 }
 
 
@@ -44,6 +42,7 @@ void UCreatureStateComponent::AddState(const TScriptInterface<IStateSourceInterf
 			if (!Container.IsValidIndex(index))
 			{
 				Container.SetNumZeroed(index + 1);
+				Container[index] = NewObject<UCreatureStateContainer>();
 			}
 			Container[index]->Add(source);
 		}

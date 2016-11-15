@@ -49,8 +49,8 @@ struct FAttributeBuff
 	float Value;
 };
 
-USTRUCT()
-struct FAttributeBuffContainer
+USTRUCT(BlueprintType)
+struct FAttributeBuffContainerConfiger
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -60,8 +60,18 @@ struct FAttributeBuffContainer
 	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
 	float Limit;
 
+
 	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
 	TEnumAsByte<EBuffType> BuffType;
+
+};
+
+USTRUCT()
+struct FAttributeBuffContainer
+{
+	GENERATED_USTRUCT_BODY()
+
+	FAttributeBuffContainerConfiger configer;
 
 	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
 	TArray<FAttributeBuff> BuffList;

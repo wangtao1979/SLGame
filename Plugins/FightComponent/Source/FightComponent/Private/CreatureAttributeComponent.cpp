@@ -14,7 +14,9 @@ UCreatureAttributeComponent::UCreatureAttributeComponent()
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = false;
 	MaxAttributeEntry = 0;
-	// ...
+
+	DefaultAttributeRule = UCreatureAttributeRule::StaticClass();
+	DefaultAttributeBuffRule = UCreatureAttributeBuffRule::StaticClass();
 }
 
 
@@ -24,7 +26,8 @@ void UCreatureAttributeComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-
+	AttruteRule = NewObject<UCreatureAttributeRule>(this, DefaultAttributeRule);
+	AttruteBuffRule = NewObject<UCreatureAttributeBuffRule>(this, DefaultAttributeBuffRule);
 }
 
 
@@ -37,12 +40,7 @@ void UCreatureAttributeComponent::TickComponent(float DeltaTime, ELevelTick Tick
 }
 
 
-float UCreatureAttributeComponent::GetByIndex(uint8 type)
-{
-	return 0.0f;
-}
-
-float UCreatureAttributeComponent::GetByName(FString type)
+float UCreatureAttributeComponent::GetAttribute(uint8 type)
 {
 	return 0.0f;
 }
