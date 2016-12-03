@@ -33,7 +33,6 @@ public:
 		P_FINISH;
 		// Walk the structs' properties
 		UScriptStruct* Struct = StructProperty->Struct;
-		uint8 index = 0;
 		TArray<float> AttributeList;
 		for (TFieldIterator<UProperty> It(Struct); It; ++It)
 		{
@@ -74,7 +73,6 @@ public:
 
 		// Walk the structs' properties
 		UScriptStruct* Struct = StructProperty->Struct;
-		uint8 index = 0;
 		TArray<FString> NameList;
 		for (TFieldIterator<UProperty> It(Struct); It; ++It)
 		{

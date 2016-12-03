@@ -7,7 +7,7 @@
 /**
 *
 */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class UCreatureAttributeBuffRule : public UObject
 {
 	GENERATED_BODY()
@@ -15,4 +15,9 @@ protected:
 
 public:
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "CreatureAttribute")
+	void InitRule();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "CreatureAttribute")
+	int GetBuffLevel();
 };

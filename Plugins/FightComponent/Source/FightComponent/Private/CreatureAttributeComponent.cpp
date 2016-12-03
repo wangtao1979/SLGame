@@ -3,9 +3,6 @@
 #include "FightComponentPrivatePCH.h"
 #include "CreatureAttributeComponent.h"
 
-
-
-
 // Sets default values for this component's properties
 UCreatureAttributeComponent::UCreatureAttributeComponent()
 {
@@ -26,8 +23,15 @@ void UCreatureAttributeComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	AttruteRule = NewObject<UCreatureAttributeRule>(this, DefaultAttributeRule);
-	AttruteBuffRule = NewObject<UCreatureAttributeBuffRule>(this, DefaultAttributeBuffRule);
+	AttributeRule = NewObject<UCreatureAttributeRule>(this, DefaultAttributeRule);
+	AttributeRule->InitRule();
+	AttributeBuffRule = NewObject<UCreatureAttributeBuffRule>(this, DefaultAttributeBuffRule);
+	AttributeBuffRule->InitRule();
+
+	// init attribute size 
+	int BuffLevel = AttributeBuffRule->GetBuffLevel();
+	BuffContainerList.AddDefaulted(BuffLevel);
+
 }
 
 
@@ -52,5 +56,21 @@ void UCreatureAttributeComponent::AddBuff(const TScriptInterface<IAttributeSourc
 
 void UCreatureAttributeComponent::RemoveBuff(const TScriptInterface<IAttributeSourceInterface>& source)
 {
+	BuffContainerList[]
+}
 
+float UCreatureAttributeComponent::GetDynamicAttribute(uint8 type)
+{
+	return DynamicAttributeList[type];
+}
+
+void UCreatureAttributeComponent::SetDynamicAttribute(uint8 type, float v)
+{
+	DynamicAttributeList[type] = FMath::Max(v, GetAttribute(type));
+}
+
+
+void UCreatureAttributeComponent::AddDynamicAttribute(uint8 type, float v)
+{
+	DynamicAttributeList[type] = FMath::Max(DynamicAttributeList[type]+v, GetAttribute(type));
 }

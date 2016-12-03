@@ -23,9 +23,11 @@ private:
 
 	TArray<FAttributeBuffContainer> BuffContainerList;
 
-	UCreatureAttributeRule* AttruteRule;
+	UCreatureAttributeRule* AttributeRule;
 
-	UCreatureAttributeBuffRule* AttruteBuffRule;
+	UCreatureAttributeBuffRule* AttributeBuffRule;
+
+	TArray<float> DynamicAttributeList;
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
@@ -51,6 +53,18 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
 	float GetAttribute(uint8 type);
+
+
+	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
+	float GetDynamicAttribute(uint8 type);
+
+
+	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
+	void SetDynamicAttribute(uint8 type,float v);
+
+
+	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
+	void AddDynamicAttribute(uint8 type, float v);
 
 	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
 	void AddBuff(const TScriptInterface<IAttributeSourceInterface>& source);
