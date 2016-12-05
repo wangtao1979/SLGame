@@ -21,6 +21,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = CreatureAttribute)
 	TArray<FString> AttributeNameList;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CreatureAttribute)
+	UEnum* AttributeEnum;
 public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "CreatureAttribute")

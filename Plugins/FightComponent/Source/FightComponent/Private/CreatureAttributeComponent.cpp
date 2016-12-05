@@ -56,7 +56,7 @@ void UCreatureAttributeComponent::AddBuff(const TScriptInterface<IAttributeSourc
 
 void UCreatureAttributeComponent::RemoveBuff(const TScriptInterface<IAttributeSourceInterface>& source)
 {
-	BuffContainerList[]
+	//BuffContainerList[]
 }
 
 float UCreatureAttributeComponent::GetDynamicAttribute(uint8 type)
