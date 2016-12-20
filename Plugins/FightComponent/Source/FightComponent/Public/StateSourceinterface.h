@@ -6,7 +6,7 @@
 
 /** Interface for actors which can be selected */
 UINTERFACE(Blueprintable)
-class UStateSourceInterface : public UInterface
+class FIGHTCOMPONENT_API UStateSourceInterface : public UInterface
 {
 	GENERATED_UINTERFACE_BODY()
 };

@@ -8,7 +8,7 @@
 *
 */
 UCLASS(BlueprintType, Blueprintable)
-class UCreatureAttributeBuffRule : public UObject
+class FIGHTCOMPONENT_API UCreatureAttributeBuffRule : public UObject
 {
 	GENERATED_BODY()
 protected:

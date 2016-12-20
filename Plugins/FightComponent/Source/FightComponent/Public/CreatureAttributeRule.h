@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Object.h"
+#include "Runtime/Core/Public/Internationalization/Regex.h"
+#include "Runtime/Engine/Classes/Engine/DataTable.h"
 #include "CreatureAttributeRule.generated.h"
 
 
@@ -11,51 +13,78 @@
 *
 */
 UCLASS(BlueprintType, Blueprintable)
-class UCreatureAttributeRule : public UObject
+class FIGHTCOMPONENT_API UCreatureAttributeRule : public UObject
 {
 	GENERATED_BODY()
+
+
+	//const FRegexPattern NameRegexPattern;
+
 public:
-
-	UPROPERTY(BlueprintReadOnly, Category = CreatureAttribute)
-	int AttributeSize;
-
-	UPROPERTY(BlueprintReadOnly, Category = CreatureAttribute)
-	TArray<FString> AttributeNameList;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CreatureAttribute)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Creature|Attribute")
 	UEnum* AttributeEnum;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Creature|Attribute")
+	UDataTable* AttributeTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Creature|Attribute")
+	FName AttributeTableRow;
 public:
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "CreatureAttribute")
+	//UCreatureAttributeRule();
+
 	void InitRule();
 
-	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute", CustomThunk, meta = (CustomStructureParam = "Attribute"))
-	void BindAttriibuteDefine(UProperty* Attribute);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Creature|Attribute")
+	void OnInit();
 
-	DECLARE_FUNCTION(execBindAttriibuteDefine)
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
+	int GetAttrubuteNumber() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
+	FORCEINLINE UEnum* GetAttibuteEnum() const
 	{
+		return AttributeEnum;
+	}
+
+	void ParseAttributeStruct(UScriptStruct* Struct, void* StructPtr, TArray<float> AttributeArray);
+
+/**	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute", CustomThunk, meta = (CustomStructureParam = "Attribute"))
+	void ParseAttributeStruct(UProperty* Attribute, TArray<float> AttributeArray);
+
+	DECLARE_FUNCTION(execParseAttributeStruct)
+	{
+		P_GET_TARRAY_REF(float, AttributeArray)
+
 		Stack.Step(Stack.Object, NULL);
 		UStructProperty* StructProperty = ExactCast<UStructProperty>(Stack.MostRecentProperty);
 		void* StructPtr = Stack.MostRecentPropertyAddress;
 		P_FINISH;
 
-		UScriptStruct* Struct = StructProperty->Struct;
+		AttributeArray.SetNumZeroed(AttributeEnum->NumEnums());
 
-		AttributeSize = Struct->PropertiesSize;
+		UScriptStruct* Struct = StructProperty->Struct;
 		for (TFieldIterator<UProperty> It(Struct); It; ++It)
 		{
 			UProperty* Property = *It;
-
-			// This is the variable name if you need it
 			FString VariableName = Property->GetName();
-			FString left;
-			FString right;
-			bool succ = VariableName.Split("_", &left, &right, ESearchCase::CaseSensitive, ESearchDir::FromStart);
-			if (succ)
+			const FRegexPattern ElementRegexPattern(TEXT(""));
+
+			FRegexMatcher matcher(ElementRegexPattern, VariableName);
+			if (matcher.FindNext())
 			{
-				VariableName = left;
+				VariableName = matcher.GetCaptureGroup(0);
 			}
-			AttributeNameList.Add(VariableName);
+			int32 index = AttributeEnum->FindEnumIndex(FName(*VariableName));
+			if (index != INDEX_NONE)
+			{
+				void* ValuePtr = Property->ContainerPtrToValuePtr<void>(StructPtr, 0);
+				UNumericProperty *NumericProperty = Cast<UNumericProperty>(Property);
+				if (NumericProperty && NumericProperty->IsFloatingPoint())
+				{
+					AttributeArray[index] = NumericProperty->GetFloatingPointPropertyValue(ValuePtr);
+				}
+			}
 		}
-	}
+	}*/
 };

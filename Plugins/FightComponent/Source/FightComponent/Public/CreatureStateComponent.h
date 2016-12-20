@@ -11,12 +11,20 @@
  * ½ÇÉ«×´Ì¬
  */
 UCLASS(BlueprintType,Blueprintable)
-class UCreatureStateComponent : public UActorComponent
+class FIGHTCOMPONENT_API UCreatureStateComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 protected:
 	TArray<UCreatureStateContainer*> Container;
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Creature|State")
+	UEnum* StateEnum;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Creature|State")
+	int32 StateNumber;
+	
 public:
 	// Sets default values for this component's properties
 	UCreatureStateComponent();
@@ -27,15 +35,15 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UFUNCTION(BlueprintCallable, Category = "Fight")
+	UFUNCTION(BlueprintCallable, Category = "Creature|State")
 	void AddState(const TScriptInterface<IStateSourceInterface>& source);
 
-	UFUNCTION(BlueprintCallable, Category = "Fight")
+	UFUNCTION(BlueprintCallable, Category = "Creature|State")
 	void RemoveState(const TScriptInterface<IStateSourceInterface>& source);
 
-	UFUNCTION(BlueprintCallable, Category = "Fight")
+	UFUNCTION(BlueprintCallable, Category = "Creature|State")
 	bool IsStateActive(uint8 state);
 
-	UFUNCTION(BlueprintCallable, Category = "Fight")
+	UFUNCTION(BlueprintCallable, Category = "Creature|State")
 	void InitializeState();
 };

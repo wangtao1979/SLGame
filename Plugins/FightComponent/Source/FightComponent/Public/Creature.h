@@ -10,7 +10,7 @@
 #include "Creature.generated.h"
 
 UCLASS(Blueprintable)
-class ACreature : public ACharacter
+class FIGHTCOMPONENT_API ACreature : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -38,8 +38,6 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Creature", meta = (AllowPrivateAccess = "true"))

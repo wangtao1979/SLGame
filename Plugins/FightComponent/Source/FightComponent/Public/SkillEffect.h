@@ -7,7 +7,7 @@
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class USkillEffect : public UActorComponent
+class FIGHTCOMPONENT_API USkillEffect : public UActorComponent
 {
 	GENERATED_BODY()
 

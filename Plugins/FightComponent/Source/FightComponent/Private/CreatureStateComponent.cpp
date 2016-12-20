@@ -22,6 +22,12 @@ UCreatureStateComponent::UCreatureStateComponent()
 void UCreatureStateComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	Container.SetNumUninitialized(StateEnum->NumEnums());
+	StateNumber = StateEnum->NumEnums();
+	for (int32 index=0; index<StateNumber; index++)
+	{
+		Container[index] = NewObject<UCreatureStateContainer>();
+	}
 }
 
 
@@ -37,13 +43,8 @@ void UCreatureStateComponent::AddState(const TScriptInterface<IStateSourceInterf
 {
 	for (uint8 index : source->GetState())
 	{
-		if (index >= 0)
+		if (index >= 0 && index<StateNumber)
 		{
-			if (!Container.IsValidIndex(index))
-			{
-				Container.SetNumZeroed(index + 1);
-				Container[index] = NewObject<UCreatureStateContainer>();
-			}
 			Container[index]->Add(source);
 		}
 	}
@@ -53,19 +54,16 @@ void UCreatureStateComponent::RemoveState(const TScriptInterface<IStateSourceInt
 {
 	for (uint8 index : source->GetState())
 	{
-		if (index >= 0)
+		if (index >= 0 && index < StateNumber)
 		{
-			if (Container.IsValidIndex(index))
-			{
-				Container[index]->Remove(source);
-			}
+			Container[index]->Remove(source);
 		}
 	}
 }
 
 bool UCreatureStateComponent::IsStateActive(uint8 state)
 {
-	if (Container.IsValidIndex(state))
+	if (state >= 0 && state < StateNumber)
 	{
 		return Container[state]->IsActive();
 	}

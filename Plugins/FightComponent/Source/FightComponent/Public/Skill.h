@@ -6,7 +6,7 @@
 #include "Skill.generated.h"
 
 UCLASS()
-class ASkill : public AActor
+class FIGHTCOMPONENT_API ASkill : public AActor
 {
 	GENERATED_BODY()
 	

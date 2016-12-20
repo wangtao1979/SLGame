@@ -8,7 +8,7 @@
 *
 */
 UCLASS()
-class UCreatureStateContainer : public UObject
+class FIGHTCOMPONENT_API UCreatureStateContainer : public UObject
 {
 	GENERATED_BODY()
 protected:

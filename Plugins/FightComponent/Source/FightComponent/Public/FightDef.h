@@ -26,13 +26,14 @@ struct FAttributeVector
 	{
 		return Value[type];
 	}
-	float Set(uint8 type, float value)
+	void Set(uint8 type, float value)
 	{
 		Value[type] = value;
 	}
 	float Add(uint8 type, float value)
 	{
 		Value[type] += value;
+		return Value[type];
 	}
 };
 

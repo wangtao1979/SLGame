@@ -10,15 +10,15 @@
 	"DocsURL": "",
 	"MarketplaceURL": "",
 	"SupportURL": "",
-	"EnabledByDefault": false,
+	"EnabledByDefault": true,
 	"CanContainContent": false,
 	"IsBetaVersion": false,
-	"Installed": false,
+	"Installed": true,
 	"Modules": [
 		{
 			"Name": "FightComponent",
-			"Type": "Developer",
-			"LoadingPhase": "Default"
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault"
 		}
 	]
 }

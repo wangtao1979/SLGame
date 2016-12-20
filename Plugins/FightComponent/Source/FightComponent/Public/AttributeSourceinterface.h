@@ -7,7 +7,7 @@
 
 /** Interface for actors which can be selected */
 UINTERFACE(Blueprintable)
-class UAttributeSourceInterface : public UInterface
+class FIGHTCOMPONENT_API UAttributeSourceInterface : public UInterface
 {
 	GENERATED_UINTERFACE_BODY()
 };

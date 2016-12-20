@@ -13,7 +13,7 @@
  * 
  */
 UCLASS(BlueprintType, Blueprintable)
-class UCreatureAttributeComponent : public UActorComponent
+class FIGHTCOMPONENT_API UCreatureAttributeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 private:
@@ -61,7 +61,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
 	void SetDynamicAttribute(uint8 type,float v);
-
 
 	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
 	void AddDynamicAttribute(uint8 type, float v);

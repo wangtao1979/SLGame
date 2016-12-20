@@ -49,7 +49,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSWipe, UTouchGestureRecognizer *
  */
 
 UCLASS(ClassGroup=Input, meta=(BlueprintSpawnableComponent))
-class  UTouchGestureRecognizer : public UGestureRecognizerComponent
+class MOBILETOUCHCOMPONENT_API UTouchGestureRecognizer : public UGestureRecognizerComponent
 {
 	GENERATED_BODY()
 

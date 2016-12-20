@@ -30,13 +30,6 @@ void ACreature::Tick( float DeltaTime )
 
 }
 
-// Called to bind functionality to input
-void ACreature::SetupPlayerInputComponent(class UInputComponent* InputComponent)
-{
-	Super::SetupPlayerInputComponent(InputComponent);
-
-}
-
 
 void ACreature::Scale(float scale)
 {

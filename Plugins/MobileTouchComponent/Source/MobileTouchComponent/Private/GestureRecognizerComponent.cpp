@@ -200,7 +200,7 @@ void UGestureRecognizerComponent::UpdateStoredTouchData(const FVector (&Touches)
 				}
 				else
 				{
-					TouchHold(Index, ThisTouch, now - ThisTouch.TouchStartTimes[0]);
+					TouchHold(Index, ThisTouch, now - ThisTouch.TouchStartTimes.Last());
 				}
 			}
 		}
@@ -233,4 +233,19 @@ void UGestureRecognizerComponent::CalculateTouchCount(const FVector (&Touches)[E
 	{
 		MaxFingersThisGesture = CurrentTouchCount;
 	}
+}
+
+
+bool UGestureRecognizerComponent::GetImpactGroundPoint(APlayerController * controller,TEnumAsByte<ECollisionChannel> TraceChannel, FVector2D ScreenSPoint, FVector& ImpactPoint)
+{
+	// Trace to see what is under the touch location
+	FHitResult HitResult;
+	//this->SetViewTargetWithBlend()
+	controller->GetHitResultAtScreenPosition(ScreenSPoint, TraceChannel, true, HitResult);
+	if (HitResult.bBlockingHit)
+	{
+		ImpactPoint = HitResult.ImpactPoint;
+		return true;
+	}
+	return false;
 }

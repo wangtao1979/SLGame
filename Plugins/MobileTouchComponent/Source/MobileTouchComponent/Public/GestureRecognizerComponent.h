@@ -200,7 +200,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGestureEnded, UGestureRecognizerCo
 /** Base class for gesture recognizer components. This class doesn't recognize any gestures, it simply provides a base class that concrete gesture recognizers can use */
 
 UCLASS(ClassGroup=Input, meta=(BlueprintSpawnableComponent))
-class UGestureRecognizerComponent : public UActorComponent
+class MOBILETOUCHCOMPONENT_API UGestureRecognizerComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -262,6 +262,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Gestures|Result")
 	FVector2D GetTouchLocation(int32 FingerIndex) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Gestures|Result", meta = (AllowPrivateAccess = "true"))
+	bool GetImpactGroundPoint(APlayerController * controller,TEnumAsByte<ECollisionChannel> TraceChannel,FVector2D ScreenSPoint, FVector& ImpactPoint);
 protected:
 	
 	// This stores information about each of the possible touches.
