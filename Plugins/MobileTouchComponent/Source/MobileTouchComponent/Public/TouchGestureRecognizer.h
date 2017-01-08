@@ -42,7 +42,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FHold, UTouchGestureRecognizer *, 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FHoldEnd, UTouchGestureRecognizer *, Recognizer, FVector2D, StartPostion, FVector2D, EndPostion, float, DeltaTime);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FDoubleTap, UTouchGestureRecognizer *, Recognizer, FVector2D, Postion);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTap, UTouchGestureRecognizer *, Recognizer, FVector2D, Postion);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSWipe, UTouchGestureRecognizer *, Recognizer, FVector2D, StartPostion, FVector2D, EndPostion);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FSWipe, UTouchGestureRecognizer *, Recognizer, FVector2D, StartPostion, FVector2D, EndPostion,int32, SwipTime,bool,IsEnd);
 
 /**
  *  Base class for gesture recognizers that continually update their delegate during the gesture, rather than waiting for the gesture to be finished.
@@ -95,6 +95,12 @@ public:
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
-private:
-	int32 TapCounts[EKeys::NUM_TOUCH_KEYS];
+
+	virtual void InitializeComponent() override;
+
+	bool IsHolding(int32 FingerIndex, FGestureTouchData& Data, float DeltaTime);
+	bool IsSingleSwipe(int32 FingerIndex, FGestureTouchData& Data, float DeltaTime);
+protected:
+	int32 SwipTime;
+	int32 SwipRecordNumber;
 };

@@ -278,7 +278,7 @@ protected:
 	
 	virtual void ResetGesture(void);
 	
-private:
+protected:
 	void CalculateTouchCount(const FVector (&Touches)[EKeys::NUM_TOUCH_KEYS]);
 	void UpdateStoredTouchData(const FVector (&Touches)[EKeys::NUM_TOUCH_KEYS]);
 	void ProcessTouches(const FVector (&Touches)[EKeys::NUM_TOUCH_KEYS], float DeltaTime);

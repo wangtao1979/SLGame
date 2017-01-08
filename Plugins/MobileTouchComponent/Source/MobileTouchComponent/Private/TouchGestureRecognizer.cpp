@@ -7,10 +7,36 @@ UTouchGestureRecognizer::UTouchGestureRecognizer() : Super()
 , TimeForHold(0.5)
 , MaxTimeForDoubleTap(0.3)
 , DistanceForSwipe(30)
+, SwipTime(0)
+, SwipRecordNumber(1)
 {
 	bFlushTouchDataOnGestureEnded = false;
 }
 
+bool UTouchGestureRecognizer::IsHolding(int32 FingerIndex, FGestureTouchData& Data, float DeltaTime)
+{
+	if (Data.TouchStartTimes.Num() > 1)
+	{
+		return Data.TouchStartTimes[1]- Data.TouchStartTimes[0] > TimeForHold;
+	}
+	else
+	{
+		return DeltaTime > TimeForHold;
+	}
+}
+
+bool UTouchGestureRecognizer::IsSingleSwipe(int32 FingerIndex, FGestureTouchData& Data, float DeltaTime)
+{
+	if (Data.TouchPoints.Num() > 2 )
+	{
+		FVector2D TouchDelta = Data.TouchPoints.Last(2) - Data.TouchPoints.Last();
+		TouchDelta = UGestureMathLibrary::ScaleVector2DForScreen(TouchDelta);
+		float MovementSquared = TouchDelta.SizeSquared();
+		return MovementSquared > ToleranceSquared;
+	}
+
+	return false;
+}
 
 void UTouchGestureRecognizer::TouchBegan(int32 FingerIndex, FGestureTouchData& Data)
 {
@@ -19,17 +45,20 @@ void UTouchGestureRecognizer::TouchBegan(int32 FingerIndex, FGestureTouchData& D
 
 void UTouchGestureRecognizer::TouchMoved(int32 FingerIndex, FGestureTouchData& Data, float DeltaTime)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("TouchMoved"));
-	//UE_LOG(LogTemp, Warning, TEXT("DeltaTime=%f TimeForHold=%f"), DeltaTime, TimeForHold);
-	if (DeltaTime >= TimeForHold)
+	if (IsHolding(FingerIndex,Data,DeltaTime))
 	{
 		GestureHoldDelegate.Broadcast(this, Data.TouchPoints[0], GetTouchLocation(FingerIndex), DeltaTime);
+	}
+	else if(Data.TouchPoints.Num() > SwipRecordNumber)
+	{
+		SwipRecordNumber = Data.TouchPoints.Num();
+		GestureSwipeDelegate.Broadcast(this, Data.TouchPoints.Last(1), Data.TouchPoints.Last(), ++SwipTime,false);
 	}
 }
 
 void UTouchGestureRecognizer::TouchHold(int32 FingerIndex, FGestureTouchData& Data, float DeltaTime)
 {
-	if (DeltaTime >= TimeForHold)
+	if (IsHolding(FingerIndex, Data, DeltaTime))
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("TouchHold"));
 		GestureHoldDelegate.Broadcast(this, Data.TouchPoints[0], GetTouchLocation(FingerIndex), DeltaTime);
@@ -38,16 +67,24 @@ void UTouchGestureRecognizer::TouchHold(int32 FingerIndex, FGestureTouchData& Da
 
 void UTouchGestureRecognizer::TouchEnded(int32 FingerIndex, FGestureTouchData& Data, float DeltaTime)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("TouchEnded"));
-	if (DeltaTime < TimeForHold) 
+	//UE_LOG(LogTemp, Warning, TEXT("TouchEnded DeltaTime=%f MaxTimeForDoubleTap=%f TimeForHold=%f touh number=%d"), DeltaTime, MaxTimeForDoubleTap, TimeForHold, Data.TouchEndTimes.Num());
+	SwipTime = 0;
+	SwipRecordNumber = 1;
+	if (IsHolding(FingerIndex, Data, DeltaTime))
 	{
-		if (Data.TouchPoints.Num() > 1 && Data.GestureLength() > DistanceForSwipe)
+		GestureHoldEndDelegate.Broadcast(this, Data.TouchPoints[0], Data.TouchPoints.Last(), DeltaTime);
+		ResetGesture();
+	}
+	else
+	{
+		if (IsSingleSwipe(FingerIndex, Data, DeltaTime))
 		{
-			GestureSwipeDelegate.Broadcast(this, Data.TouchPoints[0], Data.TouchPoints.Last());
+			GestureSwipeDelegate.Broadcast(this, Data.TouchPoints.Last(2), Data.TouchPoints.Last(0), SwipTime, true);
 			ResetGesture();
-		}else if (Data.TouchEndTimes.Num() > 1)
+		}
+		else if (Data.TouchEndTimes.Num() > 1)
 		{
-			if (Data.TouchEndTimes.Last() - Data.TouchEndTimes.Last(1)<MaxTimeForDoubleTap)
+			if (DeltaTime < MaxTimeForDoubleTap)
 			{
 				GestureDoubleTapDelegate.Broadcast(this, Data.TouchPoints.Last());
 				ResetGesture();
@@ -58,11 +95,6 @@ void UTouchGestureRecognizer::TouchEnded(int32 FingerIndex, FGestureTouchData& D
 			GestureTapDelegate.Broadcast(this, Data.TouchPoints.Last());
 		}
 	}
-	else
-	{
-		GestureHoldEndDelegate.Broadcast(this, Data.TouchPoints[0], Data.TouchPoints.Last(), DeltaTime);
-		ResetGesture();
-	}
 }
 
 void UTouchGestureRecognizer::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
@@ -72,4 +104,10 @@ void UTouchGestureRecognizer::TickComponent(float DeltaTime, enum ELevelTick Tic
 	{
 		ResetGesture();
 	}
+}
+
+void UTouchGestureRecognizer::InitializeComponent()
+{
+	MoveTolerance = DistanceForSwipe;
+	ToleranceSquared = MoveTolerance * MoveTolerance;
 }

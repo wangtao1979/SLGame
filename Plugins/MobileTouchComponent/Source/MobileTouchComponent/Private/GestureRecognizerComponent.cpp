@@ -170,11 +170,11 @@ void UGestureRecognizerComponent::UpdateStoredTouchData(const FVector (&Touches)
 
 	for (int32 Index = 0; Index < ARRAY_COUNT(TouchData); Index++)
 	{
+		FVector2D Postion = FVector2D(Touches[Index].X, Touches[Index].Y);
 		FGestureTouchData& ThisTouch = TouchData[Index];
 		// If it's a touch, store the position of the touch
 		if (Index < CurrentTouchCount)
 		{
-			FVector2D Postion = FVector2D(Touches[Index].X, Touches[Index].Y);
 			if (!bWasDownPreviously[Index])
 			{
 				ThisTouch.SampleTouch(Postion, now);
@@ -209,6 +209,7 @@ void UGestureRecognizerComponent::UpdateStoredTouchData(const FVector (&Touches)
 		{
 			if (bWasDownPreviously[Index])
 			{
+				ThisTouch.SampleTouch(Postion, now);
 				ThisTouch.EndTouch(now);
 				TouchEnded(Index, ThisTouch, now - ThisTouch.FirstTouchTime);
 				bWasDownPreviously[Index] = false;
