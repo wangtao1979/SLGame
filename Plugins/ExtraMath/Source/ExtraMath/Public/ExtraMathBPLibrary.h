@@ -27,6 +27,18 @@ class UExtraMathBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "IsInSectorRange"), Category = "ExtraMath")
-	static bool IsInSectorRange(FVector SrcLocation, FRotator Rotator, FVector TargetLocation, float angle);
+	UFUNCTION(BlueprintCallable, Category = "ExtraMath")
+	static bool IsInSectorRange(UPARAM(Ref) FVector& SrcLocation, UPARAM(Ref) FRotator& Rotator, UPARAM(Ref) FVector& TargetLocation, float angle);
+
+
+	UFUNCTION(BlueprintCallable, Category = "ExtraMath")
+	static void GetMaskedDirction(UPARAM(Ref) FVector& Start, UPARAM(Ref) FVector& End, UPARAM(Ref) FVector& Mask, FVector& Dirction);
+
+
+	UFUNCTION(BlueprintCallable, Category = "ExtraMath")
+	static float GetAngle(UPARAM(Ref) FRotator& From, UPARAM(Ref) FRotator& To);
+
+
+	UFUNCTION(BlueprintCallable, Category = "ExtraMath")
+	static void CalculateThrowSpeed(FVector& Result, UPARAM(Ref) FVector& Origin, UPARAM(Ref) FVector& Target,float Time, float Gravity);
 };
