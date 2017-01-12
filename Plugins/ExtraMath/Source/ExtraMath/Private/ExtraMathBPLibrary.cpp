@@ -35,11 +35,12 @@ float UExtraMathBPLibrary::GetAngle(FRotator& From, FRotator& To)
 
 void UExtraMathBPLibrary::CalculateThrowSpeed(FVector& Result, FVector& Origin, FVector& Target, float Time,float Gravity)
 {
+	Time = FMath::Max(Time, 0.1f);
 	FVector ToTarget = Target - Origin;
 	float z = ToTarget.Z;
 	float xy = ToTarget.Size2D();
 
-	float V0z = z / Time + 0.5f * Gravity *Time;
+	float V0z = z / Time + -0.5f * Gravity * Time;
 	float V0xy = xy / Time;
 	
 	Result = ToTarget.GetSafeNormal2D();
