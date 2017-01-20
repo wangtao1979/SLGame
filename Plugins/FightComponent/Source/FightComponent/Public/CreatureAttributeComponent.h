@@ -17,18 +17,17 @@ class FIGHTCOMPONENT_API UCreatureAttributeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 private:
-	TMap<FString, uint8> Name2IndexMapping;
-	
-	int MaxAttributeEntry;
 
 	TArray<FAttributeBuffContainer> BuffContainerList;
 
-	UCreatureAttributeRule* AttributeRule;
-
-	UCreatureAttributeBuffRule* AttributeBuffRule;
-
 	TArray<float> DynamicAttributeList;
 protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
+	UCreatureAttributeRule* AttributeRule;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
+	UCreatureAttributeBuffRule* AttributeBuffRule;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
 	TSubclassOf<class UCreatureAttributeRule> DefaultAttributeRule;
@@ -37,10 +36,7 @@ protected:
 	TSubclassOf<class UCreatureAttributeBuffRule> DefaultAttributeBuffRule;
 
 public:
-	inline int GetAttribyteEnty()
-	{
-		return MaxAttributeEntry;
-	}
+
 public:
 	// Sets default values for this component's properties
 	UCreatureAttributeComponent();
@@ -70,4 +66,19 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
 	void RemoveBuff(const TScriptInterface<IAttributeSourceInterface>& source);
+
+	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute", CustomThunk, meta = (CustomStructureParam = "Attribute"))
+	void SetBaseAttribute(UProperty* Attribute);
+
+	DECLARE_FUNCTION(execSetBaseAttribute)
+	{
+		Stack.Step(Stack.Object, NULL);
+		UStructProperty* StructProperty = ExactCast<UStructProperty>(Stack.MostRecentProperty);
+		void* StructPtr = Stack.MostRecentPropertyAddress;
+		P_FINISH;
+
+		UScriptStruct* Struct = StructProperty->Struct;
+		TArray<float> AttributeList;
+		AttributeRule->ParseAttributeStruct(Struct, StructPtr, AttributeList);
+	}
 };

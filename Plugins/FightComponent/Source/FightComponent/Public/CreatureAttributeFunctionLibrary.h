@@ -14,11 +14,20 @@ class UCreatureAttributeFunctionLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 	
 public:
-	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute", CustomThunk, meta = (CustomStructureParam = "Attribute"))
-	static TArray<float> AttributeStructToValueArray(UProperty* Attribute);
+	void ParseAttributeStruct(UScriptStruct* Struct, void* StructPtr, UUserDefinedEnum* AttributeEnum, TArray<float>& AttributeArray);
 
-	DECLARE_FUNCTION(execAttributeStructToValueArray)
+
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
+	bool GetAttributeFromTable(UDataTable* AttributeTable, FName Key, UUserDefinedEnum* AttributeEnum, TArray<float>& AttributeArray);
+
+	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute", CustomThunk, meta = (CustomStructureParam = "Attribute"))
+	static TArray<float> ConvertStructToAttribute(UUserDefinedEnum* AttributeEnum,UProperty* Attribute);
+
+	DECLARE_FUNCTION(execConvertStructToAttribute)
 	{
+
+		P_GET_OBJECT(UUserDefinedEnum, AttributeEnum);
+
 		// Steps into the stack, walking to the next property in it
 		Stack.Step(Stack.Object, NULL);
 
@@ -30,65 +39,14 @@ public:
 		// This is where the property value is truly stored
 		void* StructPtr = Stack.MostRecentPropertyAddress;
 		// We need this to wrap up the stack
+
 		P_FINISH;
 		// Walk the structs' properties
 		UScriptStruct* Struct = StructProperty->Struct;
 		TArray<float> AttributeList;
-		for (TFieldIterator<UProperty> It(Struct); It; ++It)
-		{
-			UProperty* Property = *It;
+		
+		ParseAttributeStruct(Struct, StructPtr, AttributeEnum, AttributeList);
 
-			// This grabs the pointer to where the property value is stored
-			void* ValuePtr = Property->ContainerPtrToValuePtr<void>(StructPtr, 0);
-			UNumericProperty *NumericProperty = Cast<UNumericProperty>(Property);
-			if (NumericProperty && NumericProperty->IsFloatingPoint())
-			{
-				AttributeList.Add(NumericProperty->GetFloatingPointPropertyValue(ValuePtr));
-			}
-		}
 		*(TArray<float>*) RESULT_PARAM = AttributeList;
-	}
-
-
-	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute", CustomThunk, meta = (CustomStructureParam = "Attribute"))
-	static TArray<FString> AttributeStructToNameArray(UProperty* Attribute);
-
-	DECLARE_FUNCTION(execAttributeStructToNameArray)
-	{
-		// Steps into the stack, walking to the next property in it
-		Stack.Step(Stack.Object, NULL);
-
-		// Grab the last property found when we walked the stack
-		// This does not contains the property value, only its type information
-		UStructProperty* StructProperty = ExactCast<UStructProperty>(Stack.MostRecentProperty);
-
-		// Grab the base address where the struct actually stores its data
-		// This is where the property value is truly stored
-		void* StructPtr = Stack.MostRecentPropertyAddress;
-
-		// We need this to wrap up the stack
-		P_FINISH;
-
-		// Iterate through the struct
-
-		// Walk the structs' properties
-		UScriptStruct* Struct = StructProperty->Struct;
-		TArray<FString> NameList;
-		for (TFieldIterator<UProperty> It(Struct); It; ++It)
-		{
-			UProperty* Property = *It;
-
-			// This is the variable name if you need it
-			FString VariableName = Property->GetName();
-			FString left;
-			FString right;
-			bool succ = VariableName.Split("_", &left, &right, ESearchCase::CaseSensitive, ESearchDir::FromStart);
-			if (succ)
-			{
-				VariableName = left;
-			}
-			NameList.Add(VariableName);
-		}
-		*(TArray<FString>*) RESULT_PARAM = NameList;
 	}
 };

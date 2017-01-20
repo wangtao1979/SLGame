@@ -10,7 +10,6 @@ UCreatureAttributeComponent::UCreatureAttributeComponent()
 	// off to improve performance if you don't need them.
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = false;
-	MaxAttributeEntry = 0;
 
 	DefaultAttributeRule = UCreatureAttributeRule::StaticClass();
 	DefaultAttributeBuffRule = UCreatureAttributeBuffRule::StaticClass();
@@ -24,7 +23,7 @@ void UCreatureAttributeComponent::BeginPlay()
 
 	// ...
 	AttributeRule = NewObject<UCreatureAttributeRule>(this, DefaultAttributeRule);
-	AttributeRule->InitRule();
+	AttributeRule->InitRule(this);
 	AttributeBuffRule = NewObject<UCreatureAttributeBuffRule>(this, DefaultAttributeBuffRule);
 	AttributeBuffRule->InitRule();
 
