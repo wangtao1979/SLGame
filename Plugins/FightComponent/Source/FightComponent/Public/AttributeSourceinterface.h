@@ -17,15 +17,13 @@ class IAttributeSourceInterface
 	GENERATED_IINTERFACE_BODY()
 
 public:
-
-	UFUNCTION(BlueprintImplementableEvent)
-	TArray<FAttributeBuff> GetAttribute();
-
-
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintNativeEvent)
 	bool IsActive();
 
+	UFUNCTION(BlueprintNativeEvent)
+	void GetBuffAttribute(TArray<FAttributeBuff> & BuffList);
 
-	UFUNCTION(BlueprintImplementableEvent)
-	uint8 GetBuffDest();
+
+	UFUNCTION(BlueprintNativeEvent)
+	uint8 GetBuffLevel();
 };

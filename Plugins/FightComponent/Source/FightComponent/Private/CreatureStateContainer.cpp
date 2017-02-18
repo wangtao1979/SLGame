@@ -21,6 +21,7 @@ bool UCreatureStateContainer::IsActive()
 {
 	for (TScriptInterface<IStateSourceInterface> source : container)
 	{
+		IStateSourceInterface::Execute_IsActive(source.GetObject());
 		if (source->IsActive())
 		{
 			return true;

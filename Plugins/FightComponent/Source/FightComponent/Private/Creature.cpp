@@ -41,3 +41,17 @@ void ACreature::ResetScale(float scale)
 {
 	SetActorScale3D(original_scale);
 }
+
+bool ACreature::IsActive_Implementation()
+{
+	return true;
+}
+
+void ACreature::GetBuffAttribute_Implementation(TArray<FAttributeBuff>& BuffList)
+{
+}
+
+uint8 ACreature::GetBuffLevel_Implementation()
+{
+	return Attribute->GetBaseAttributeLevel();
+}

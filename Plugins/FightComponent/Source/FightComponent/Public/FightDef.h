@@ -7,81 +7,101 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(FightLog, Log, All);
 
-UENUM(BlueprintType)
-enum class EBuffType
-{
-	Add 	UMETA(DisplayName = "Add"),
-	Per 	UMETA(DisplayName = "Per"),
-};
 
-USTRUCT()
-struct FAttributeVector
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
-	TArray<float> Value;
-
-	float Get(uint8 type)
-	{
-		return Value[type];
-	}
-	void Set(uint8 type, float value)
-	{
-		Value[type] = value;
-	}
-	float Add(uint8 type, float value)
-	{
-		Value[type] += value;
-		return Value[type];
-	}
-};
-
-
+//UENUM(BlueprintType)
+//enum class EBuffType
+//{
+//	Add 	UMETA(DisplayName = "Add"),
+//	Per 	UMETA(DisplayName = "Per"),
+//};
 USTRUCT(BlueprintType)
 struct FAttributeBuff
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	uint8 Type;
 
-	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float Value;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsPercent;
+
+	FAttributeBuff():
+		Type(0),
+		Value(0.0f),
+		IsPercent(false)
+	{
+
+	}
+	FAttributeBuff(uint8 _Type, float _Value, bool _IsPercent):
+		Type(_Type),
+		Value(_Value),
+		IsPercent(_IsPercent)
+	{
+	}
 };
+
 
 USTRUCT(BlueprintType)
-struct FAttributeBuffContainerConfiger
+struct FAttributeBuffConfiger
 {
 	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
-	uint8 Type;
-
-	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
-	float Limit;
-
-
-	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
-	TEnumAsByte<EBuffType> BuffType;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<float> Limit;
 };
 
-USTRUCT()
-struct FAttributeBuffContainer
+
+USTRUCT(BlueprintType)
+struct FAttribute
 {
 	GENERATED_USTRUCT_BODY()
 
-	FAttributeBuffContainerConfiger configer;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<float> BuffValue;
 
-	UPROPERTY(Category = Fight, VisibleAnywhere, BlueprintReadWrite)
-	TArray<FAttributeBuff> BuffList;
+	UPROPERTY(BlueprintReadWrite)
+	TArray<float> BuffPer;
 
-	void CountBuff(FAttributeVector& vector)
+	UPROPERTY(BlueprintReadWrite)
+	TArray<float> Final;
+
+	UPROPERTY()
+	int32 AttributeNumber;
+
+	void Init(int32 _AttributeNumber)
 	{
-		for (FAttributeBuff buff : BuffList)
+		AttributeNumber = _AttributeNumber;
+		BuffValue.AddZeroed(AttributeNumber);
+		BuffPer.AddZeroed(AttributeNumber);
+		Final.AddZeroed(AttributeNumber);
+	}
+
+	void Clear()
+	{
+		for (int32 i = 0; i < AttributeNumber; i++)
 		{
-			vector.Add(buff.Type, buff.Value);
+			BuffValue[i] = 0.0f;
+		}
+		for (int32 i = 0; i < AttributeNumber; i++)
+		{
+			BuffPer[i] = 0.0f;
+		}
+	}
+
+	void Compute(TArray<float>& PerTargetAttribute)
+	{
+		for (int32 i = 0; i < AttributeNumber; i++)
+		{
+			Final[i]= PerTargetAttribute[i] * BuffPer[i] + BuffValue[i];
+		}
+	}
+	void Count(TArray<float>& Attribute)
+	{
+		for (int32 i = 0; i < AttributeNumber; i++)
+		{
+			Attribute[i] += Final[i];
 		}
 	}
 };

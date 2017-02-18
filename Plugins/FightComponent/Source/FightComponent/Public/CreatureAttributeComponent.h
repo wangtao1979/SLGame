@@ -7,7 +7,59 @@
 #include "AttributeSourceinterface.h"
 #include "CreatureAttributeBuffRule.h"
 #include "CreatureAttributeRule.h"
+#include "CreatureAttributeFunctionLibrary.h"
+#include "AttributeSourceInterface.h"
 #include "CreatureAttributeComponent.generated.h"
+
+USTRUCT(BlueprintType)
+struct FBuffSourceContainer
+{
+	GENERATED_USTRUCT_BODY()
+
+	TMap<UObject*,TArray<FAttributeBuff>> BuffMap;
+
+	~FBuffSourceContainer()
+	{
+		BuffMap.Empty();
+	}
+
+	void Clear()
+	{
+		BuffMap.Empty();
+	}
+
+	void ComputeBuff(FAttribute &Attribute)
+	{
+		for (TPair<UObject*, TArray<FAttributeBuff>> Pair : BuffMap)
+		{
+			if (IAttributeSourceInterface::Execute_IsActive(Pair.Key))
+			{
+				for (FAttributeBuff Buff : Pair.Value)
+				{
+					if (Buff.IsPercent)
+					{
+						Attribute.BuffPer[Buff.Type] += Buff.Value;
+					}
+					else
+					{
+						Attribute.BuffValue[Buff.Type] += Buff.Value;
+					}
+				}
+			}
+		}
+	}
+
+	void AddBuff(const TScriptInterface<IAttributeSourceInterface>& source)
+	{
+		TArray<FAttributeBuff> Array;
+		IAttributeSourceInterface::Execute_GetBuffAttribute(source.GetObject(), Array);
+		BuffMap.Add(source.GetObject(), Array);
+	}
+	void RemoveBuff(const TScriptInterface<IAttributeSourceInterface>& source)
+	{
+		BuffMap.Remove(source.GetObject());
+	}
+};
 
 /**
  * 
@@ -17,24 +69,30 @@ class FIGHTCOMPONENT_API UCreatureAttributeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 private:
-
-	TArray<FAttributeBuffContainer> BuffContainerList;
-
+	UPROPERTY()
+	TArray<FBuffSourceContainer> BuffSourceContainer;
+	UPROPERTY()
+	TArray<FAttribute> BuffAttributeList;
+	UPROPERTY()
+	TArray<float> AttributeList;
+	UPROPERTY()
 	TArray<float> DynamicAttributeList;
+
+	UPROPERTY()
+	uint8 BaseAttributeIndex;
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Creature|Attribute")
 	UCreatureAttributeRule* AttributeRule;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Creature|Attribute")
 	UCreatureAttributeBuffRule* AttributeBuffRule;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
-	TSubclassOf<class UCreatureAttributeRule> DefaultAttributeRule;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Creature|Attribute")
+	ACreature * OwnerCreature;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
-	TSubclassOf<class UCreatureAttributeBuffRule> DefaultAttributeBuffRule;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Creature|Attribute")
+	int32 AttributeCount;
 public:
 
 public:
@@ -47,38 +105,47 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Creature|Attribute")
 	float GetAttribute(uint8 type);
 
-
-	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Creature|Attribute")
 	float GetDynamicAttribute(uint8 type);
 
 
-	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Creature|Attribute")
+	float GetBaseAttribute(uint8 type);
+
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
 	void SetDynamicAttribute(uint8 type,float v);
 
-	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
 	void AddDynamicAttribute(uint8 type, float v);
 
-	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
+	void ResetDynamicAttribute(uint8 type);
+
+
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
+	void ResetAllDynamicAttribute();
+
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
 	void AddBuff(const TScriptInterface<IAttributeSourceInterface>& source);
 
-	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute")
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
 	void RemoveBuff(const TScriptInterface<IAttributeSourceInterface>& source);
 
-	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute", CustomThunk, meta = (CustomStructureParam = "Attribute"))
-	void SetBaseAttribute(UProperty* Attribute);
+	UFUNCTION(BlueprintCallable, BlueprintPure,Category = "Creature|Attribute")
+	float GetBuffAttribute(uint8 BuffLevel,uint8 type);
 
-	DECLARE_FUNCTION(execSetBaseAttribute)
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
+	void ComputeBaseAttribute();
+
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
+	void ComputeAttribute();
+public:
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
+	FORCEINLINE uint8 GetBaseAttributeLevel()
 	{
-		Stack.Step(Stack.Object, NULL);
-		UStructProperty* StructProperty = ExactCast<UStructProperty>(Stack.MostRecentProperty);
-		void* StructPtr = Stack.MostRecentPropertyAddress;
-		P_FINISH;
-
-		UScriptStruct* Struct = StructProperty->Struct;
-		TArray<float> AttributeList;
-		AttributeRule->ParseAttributeStruct(Struct, StructPtr, AttributeList);
+		return BaseAttributeIndex;
 	}
 };

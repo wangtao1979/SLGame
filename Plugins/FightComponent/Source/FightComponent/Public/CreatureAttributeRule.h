@@ -8,7 +8,7 @@
 
 
 
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(Modify, uint8, Index, float, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAttributeModify, uint8, Index, float, Value);
 
 /**
 *
@@ -17,10 +17,8 @@ UCLASS(BlueprintType, Blueprintable)
 class FIGHTCOMPONENT_API UCreatureAttributeRule : public UObject
 {
 	GENERATED_BODY()
-
-	TSharedPtr<FRegexPattern> NameRegexPattern;
 	//
-	TMap<FString, int32> AttributeNameMap;
+	TMap<FString, uint8> AttributeNameMap;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Creature|Attribute")
 	UUserDefinedEnum* AttributeEnum;
@@ -28,13 +26,14 @@ public:
 public:
 	UCreatureAttributeRule(const FObjectInitializer& ObjectInitializer);
 
-	void ParseAttributeStruct(UScriptStruct* Struct, void* StructPtr, TArray<float>& AttributeArray);
-
-	//UCreatureAttributeRule();
-	void InitRule(class UCreatureAttributeComponent* AttributeComponent);
+	void InitRule();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Creature|Attribute")
-	void OnInit(class UCreatureAttributeComponent* AttributeComponent);
+	void OnInit();
+
+
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
+	uint8 FindIndex(UPARAM(Ref) FString& name);
 
 	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
 	FORCEINLINE UUserDefinedEnum* GetAttribute() const

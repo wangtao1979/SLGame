@@ -17,10 +17,10 @@ class IStateSourceInterface
 
 public:
 
-	UFUNCTION(BlueprintImplementableEvent)
-	TArray<uint8> GetState();
+	UFUNCTION(BlueprintNativeEvent)
+	void GetState(TArray<uint8> & StateList);
 
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintNativeEvent)
 	bool IsActive();
 };

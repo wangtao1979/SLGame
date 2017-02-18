@@ -10,7 +10,7 @@
 #include "Creature.generated.h"
 
 UCLASS(Blueprintable)
-class FIGHTCOMPONENT_API ACreature : public ACharacter
+class FIGHTCOMPONENT_API ACreature : public ACharacter, public IAttributeSourceInterface
 {
 	GENERATED_BODY()
 
@@ -47,4 +47,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Creature", meta = (AllowPrivateAccess = "true"))
 	void ResetScale(float scale);
 
+public:
+	// base attribute 
+	bool IsActive_Implementation();
+
+	void GetBuffAttribute_Implementation(TArray<FAttributeBuff> & BuffList);
+
+	uint8 GetBuffLevel_Implementation();
 };

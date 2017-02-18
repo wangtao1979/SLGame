@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "FightConfigerInterface.h"
 #include "CreatureAttributeFunctionLibrary.generated.h"
 
 /**
@@ -11,42 +12,35 @@
 UCLASS()
 class UCreatureAttributeFunctionLibrary : public UBlueprintFunctionLibrary
 {
-	GENERATED_BODY()
+	GENERATED_UCLASS_BODY()
 	
 public:
-	void ParseAttributeStruct(UScriptStruct* Struct, void* StructPtr, UUserDefinedEnum* AttributeEnum, TArray<float>& AttributeArray);
 
+	TSharedPtr<FRegexPattern> NameRegexPattern;
+	UCreatureAttributeRule* AttributeRule;
+
+	void ParseAttributeStruct(UScriptStruct* Struct, void* StructPtr, TArray<FAttributeBuff>& AttributeArray);
 
 	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
-	bool GetAttributeFromTable(UDataTable* AttributeTable, FName Key, UUserDefinedEnum* AttributeEnum, TArray<float>& AttributeArray);
+	static bool GetFightConfiger(TScriptInterface<IFightConfigerInterface>& FightConfiger);
+
+	UFUNCTION(BlueprintCallable, Category = "Creature|Attribute")
+	static void ConvertBuffToPercent( UPARAM(Ref) TArray<FAttributeBuff>& AttributeList);
 
 	UFUNCTION(BlueprintCallable, Category = "CreatureAttribute", CustomThunk, meta = (CustomStructureParam = "Attribute"))
-	static TArray<float> ConvertStructToAttribute(UUserDefinedEnum* AttributeEnum,UProperty* Attribute);
-
+	static TArray<FAttributeBuff> ConvertStructToAttribute(UProperty* Attribute);
 	DECLARE_FUNCTION(execConvertStructToAttribute)
 	{
-
-		P_GET_OBJECT(UUserDefinedEnum, AttributeEnum);
-
-		// Steps into the stack, walking to the next property in it
+		//P_GET_ARRAY_REF(TArray<FAttributeBuff>,AttributeList);
 		Stack.Step(Stack.Object, NULL);
-
-		// Grab the last property found when we walked the stack
-		// This does not contains the property value, only its type information
 		UStructProperty* StructProperty = ExactCast<UStructProperty>(Stack.MostRecentProperty);
-
-		// Grab the base address where the struct actually stores its data
-		// This is where the property value is truly stored
 		void* StructPtr = Stack.MostRecentPropertyAddress;
-		// We need this to wrap up the stack
-
 		P_FINISH;
-		// Walk the structs' properties
 		UScriptStruct* Struct = StructProperty->Struct;
-		TArray<float> AttributeList;
-		
-		ParseAttributeStruct(Struct, StructPtr, AttributeEnum, AttributeList);
-
-		*(TArray<float>*) RESULT_PARAM = AttributeList;
+		TArray<FAttributeBuff> AttributeList;
+		ParseAttributeStruct(Struct, StructPtr, AttributeList);
+		P_NATIVE_BEGIN;
+		*(TArray<FAttributeBuff>*) RESULT_PARAM = AttributeList;
+		P_NATIVE_END;
 	}
 };
